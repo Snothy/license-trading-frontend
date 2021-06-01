@@ -22,8 +22,8 @@ function Navbar(props) {
             <>
             <Menu.Item key="8"><Link to="/users">Users</Link></Menu.Item>
             <Menu.Item key="2"><Link to="/applications">Applications</Link></Menu.Item>
-            <Menu.Item key="3">Chat</Menu.Item>
-            <Menu.Item key="4">Roles</Menu.Item>
+            <Menu.Item key="3"><Link to="/chats">Chat</Link></Menu.Item>
+            <Menu.Item key="4"><Link to="/roles">Roles</Link></Menu.Item>
             <Menu.Item key="6" onClick={context.logout}><Link to="/">Logout</Link></Menu.Item>
             <Menu.Item key="9"><Link to = {`users/${context.user.ID}`}>Profile</Link></Menu.Item> 
             </>
