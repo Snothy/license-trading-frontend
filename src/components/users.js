@@ -1,51 +1,51 @@
-import { Card, Row, Col } from 'antd';
-import { Link } from "react-router-dom";
-const { Meta } = Card;
+import React, { useContext } from 'react';
+import { Row, Col } from 'antd';
+import UsersCard from './usersCard';
+import { status, json } from '../utilities/requestHandlers';
+import UserContext from '../contexts/user';
 
+class Users extends React.Component {
 
-const list = (
-  <>
-  <Row type="flex" justify="space-around">
-    <Col span={6}>
-        <Link to="/users/1">
-            <Card >
-                <Meta title="User One" description="Admin" />
-            </Card>
-        </Link>
-    </Col>
-    <Col span={6}>
-      <Card >
-        <Meta title="User Two" description="Superuser" />
-      </Card>
-    </Col>
-    <Col span={6}>
-      <Card >
-        <Meta title="User 3" description="user" />
-      </Card>
-    </Col>
-  </Row>  
-  <Row type="flex" justify="space-around">
-    <Col span={6}>
-      <Card >
-        <Meta title="User 4" description="user" />
-      </Card>
-    </Col>
-    <Col span={6}>
-      <Card >
-        <Meta title="User 5" description="user" />
-      </Card>
-    </Col>
-    <Col span={6}>
-      <Card >
-        <Meta title="User 6" description="user" />    
-      </Card>
-    </Col>
-  </Row>  
-  </>
-);
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: []
+        }
+    }
 
-function Users(props) {
-  return list;
-}
-
-export default Users;
+    static contextType = UserContext; //define user context for class
+  
+    componentDidMount() {
+        fetch('https://opera-ski-3000.codio-box.uk/api/users', {headers: {"Authorization": "Bearer " + this.context.user.token } })
+        .then(status)
+        .then(json)
+        .then(data => {
+            this.setState({ users: data });
+        })
+        .catch(err => {
+            console.log("Error fetching users", err);
+        });
+      }
+  
+    render() {
+        if (!this.state.users.length) {
+            return <h3>Loading users...</h3>
+        }
+        const cardList = this.state.users.map(user => {
+            return (
+            <div style={{padding:"15px"}} key={user.ID}>
+                <Col span={4}>
+                <UsersCard {...user} />
+                </Col>
+            </div>
+            )
+        });
+        return (
+            <Row type="flex" justify="space-around">
+            {cardList}
+            </Row>
+        );
+        }
+    }
+  
+    export default Users;

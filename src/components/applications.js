@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Row, Col } from 'antd';
-import ApplicationCard from './applicationCard';
+import ApplicationsCard from './applicationsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 
@@ -9,6 +9,7 @@ class Applications extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            noneFound : 0,
             applications: []
         }
     }
@@ -20,32 +21,39 @@ class Applications extends React.Component {
         .then(status)
         .then(json)
         .then(data => {
-            //console.log(data);
-            //console.log(this.context.user.token);
-            this.setState({ applications: data })
+            //Can't get response status code here, so the check is done in the .catch error handler
+            this.setState({ applications: data });
         })
-        .catch(err => console.log("Error fetching applications", err));
+        .catch(err => {
+            if (err.status === 404) {
+                this.setState( {noneFound: true});
+            }
+            console.log("Error fetching applications", err);
+        });
       }
   
     render() {
-      if (!this.state.applications.length) {
-        return <h3>Loading applications...</h3>
-      }
-      const cardList = this.state.applications.map(application => {
+        if (this.state.noneFound === true) {
+            return <h3>No applications found.</h3> 
+        } 
+        if (!this.state.applications.length) {
+            return <h3>Loading applications...</h3>
+        }
+        const cardList = this.state.applications.map(application => {
+            return (
+            <div style={{padding:"15px"}} key={application.ID}>
+                <Col span={4}>
+                <ApplicationsCard {...application} />
+                </Col>
+            </div>
+            )
+        });
         return (
-          <div style={{padding:"15px"}} key={application.ID}>
-            <Col span={4}>
-              <ApplicationCard {...application} />
-            </Col>
-          </div>
-        )
-      });
-      return (
-        <Row type="flex" justify="space-around">
-          {cardList}
-        </Row>
-      );
+            <Row type="flex" justify="space-around">
+            {cardList}
+            </Row>
+        );
+        }
     }
-  }
   
-  export default Applications;
+    export default Applications;
