@@ -1,3 +1,4 @@
+import React, { useContext } from 'react';
 import { Layout } from 'antd';
 import './App.css';
 
@@ -7,7 +8,9 @@ import Applications from './components/applications';
 import Application from './components/application';
 import Users from './components/users';
 import User from './components/user';
+import Login from './components/login';
 
+import UserContext from './contexts/user';
 
 import {
     BrowserRouter as Router,
@@ -15,33 +18,64 @@ import {
     Route
   } from "react-router-dom";
 
-
 const { Header, Content, Footer } = Layout;
 
-function App() {
-  return (
-    <Router>
-        <Layout className="layout">
-        
-        <Header>
-            <Navbar />
-        </Header>
-        
-        <Content>
-            <Switch>
-                <Route path="/applications/:id" children={<Application />} />
-                <Route path="/applications" children={<Applications />} />
-                <Route path="/users/:id" children={<User />} />
-                <Route path="/users" children={<Users />} />
-                <Route path="/" children={<Home />} exact />
-            </Switch>
-        </Content>
+class App extends React.Component {
 
-        <Footer style={{ textAlign: 'center' }}>Absolute gamer moment.</Footer>
+    constructor(props) {
+        super(props);
+        this.state = {
+        user: {loggedIn: false}
+        }
+        this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
+    }
 
-        </Layout>
-    </Router>
-  );
+    login(user) {
+        console.log("User is now being set on the context");
+        user.loggedIn = true; //useful in routes for showing conditional data | need the same for roles
+        this.setState({user:user});
+    }
+
+    logout() {
+        console.log("Removing user from the app context");
+        this.setState({user: {loggedIn:false}});
+        this.token = "";
+    }
+
+    render () {
+        const context = {
+        user: this.state.user,
+        login: this.login,
+        logout: this.logout
+        };
+
+        return (
+        <UserContext.Provider value={context}>
+            <Router>
+                <Layout className="layout">
+                
+                <Header>
+                    <Navbar />
+                </Header>
+                
+                <Content>
+                    <Switch>
+                        <Route path="/applications/:id" children={<Application />} />
+                        <Route path="/applications" children={<Applications />} />
+                        <Route path="/users/:id" children={<User />} />
+                        <Route path="/users" children={<Users />} />
+                        <Route path="/login" children={<Login />} exact />
+                    </Switch>
+                </Content>
+
+                <Footer style={{ textAlign: 'center' }}>Absolute gamer moment.</Footer>
+
+                </Layout>
+            </Router>
+        </UserContext.Provider>  
+        );
+    }
 }
 
 export default App;

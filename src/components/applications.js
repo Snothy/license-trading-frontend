@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Row, Col } from 'antd';
 import ApplicationCard from './applicationCard';
+import { status, json } from '../utilities/requestHandlers';
+import UserContext from '../contexts/user';
 
 class Applications extends React.Component {
 
     constructor(props) {
-      super(props);
-      this.state = {
-        applications: []
-      }
+        super(props);
+        this.state = {
+            applications: []
+        }
     }
+
+    static contextType = UserContext; //define user context for class
   
     componentDidMount() {
-      this.setState({
-        applications: require('../data/applications.json')
-      })
-    }
+        fetch('https://opera-ski-3000.codio-box.uk/api/applications', {headers: {"Authorization": "Bearer " + this.context.user.token } })
+        .then(status)
+        .then(json)
+        .then(data => {
+            //console.log(data);
+            //console.log(this.context.user.token);
+            this.setState({ applications: data })
+        })
+        .catch(err => console.log("Error fetching applications", err));
+      }
   
     render() {
       if (!this.state.applications.length) {
@@ -39,55 +49,3 @@ class Applications extends React.Component {
   }
   
   export default Applications;
-
-
-
-/*
-//Use rows of cards to display applications
-const list = (
-  <>
-  <Row type="flex" justify="space-around">
-    <Col span={6}>
-      <Link to="/applications/1">
-        <Card >
-            <Meta title="Application1" description="info" />
-        </Card>
-      </Link>
-    </Col>
-    <Col span={6}>
-      <Card >
-        <Meta title="Application2" description="info" />
-      </Card>
-    </Col>
-    <Col span={6}>
-      <Card >
-        <Meta title="Application2" description="info" />
-      </Card>
-    </Col>
-  </Row>  
-  <Row type="flex" justify="space-around">
-    <Col span={6}>
-      <Card >
-        <Meta title="Application2" description="info" />
-      </Card>
-    </Col>
-    <Col span={6}>
-      <Card >
-       <Meta title="Application2" description="info" />  
-      </Card>
-    </Col>
-    <Col span={6}>
-      <Card >
-         <Meta title="Application2" description="info" />
-      </Card>
-    </Col>
-  </Row>  
-  </>
-);
-
-function Applications(props) {
-  return list;
-}
-
-export default Applications;
-*/
