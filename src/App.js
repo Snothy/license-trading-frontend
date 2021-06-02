@@ -13,6 +13,8 @@ import Chats from './components/chats';
 import Chat from './components/chat';
 import Roles from './components/roles';
 import Role from './components/role';
+import Register from './components/register'
+import CreateApplication from './components/createApplication';
 
 import UserContext from './contexts/user';
 
@@ -29,7 +31,11 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-        user: {loggedIn: false}
+            user: {
+                loggedIn: false,
+                isStaff: false,
+                isAdmin: false
+            }
         }
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
@@ -38,6 +44,13 @@ class App extends React.Component {
     login(user) {
         console.log("User is now being set on the context");
         user.loggedIn = true; //useful in routes for showing conditional data | need the same for roles
+        console.log(user.role_name);
+        if(user.role_name === 'staff') {
+            user.isStaff = true;
+        } else if (user.role_name === 'administrator') {
+            user.isStaff = true;
+            user.isAdmin = true;
+        }
         this.setState({user:user});
     }
 
@@ -65,11 +78,13 @@ class App extends React.Component {
                 
                 <Content>
                     <Switch>
+                        <Route path="/applications/create" children={<CreateApplication />} />
                         <Route path="/applications/:id" children={<Application />} />
-                        <Route path="/applications" children={<Applications />} />
                         <Route path="/users/:id" children={<User />} />
                         <Route path="/chats/:id" children={<Chat />} />
                         <Route path="/roles/:id" children={<Role />} />
+                        <Route path="/applications" children={<Applications />} />
+                        <Route path="/register" children={<Register />} />
                         <Route path="/users" children={<Users />} />
                         <Route path="/login" children={<Login />} exact />
                         <Route path="/chats" children={<Chats />} exact />

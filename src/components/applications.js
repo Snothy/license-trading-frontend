@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import ApplicationsCard from './applicationsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
+import { Link } from "react-router-dom";
 
 class Applications extends React.Component {
 
@@ -34,7 +35,14 @@ class Applications extends React.Component {
   
     render() {
         if (this.state.noneFound === true) {
-            return <h3>No applications found.</h3> 
+            return (
+                <>
+                    <Button type="primary" >
+                        <Link to="/applications/create">Create Application</Link>  
+                    </Button>
+                    <h3>No applications found.</h3> 
+                </>
+            )
         } 
         if (!this.state.applications.length) {
             return <h3>Loading applications...</h3>
@@ -49,9 +57,14 @@ class Applications extends React.Component {
             )
         });
         return (
-            <Row type="flex" justify="space-around">
-            {cardList}
-            </Row>
+            <>
+                <Button type="primary" >
+                    <Link to="/applications/create">Create Application</Link>  
+                </Button>
+                <Row type="flex" justify="space-around">
+                {cardList}
+                </Row>
+            </>
         );
         }
     }

@@ -28,7 +28,7 @@ class Application extends React.Component {
             //console.log(this.props.match.params);
             this.setState({ application: [data] });
             //console.log(this.state.user);
-            console.log(data);
+            //console.log(data);
         })
         .catch(err => {
             if (err.status === 404) {

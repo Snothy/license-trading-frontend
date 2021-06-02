@@ -14,9 +14,14 @@ class ApplicationCard extends React.Component {
   render() {
     //console.log(this.props);
     //console.log(this.props);
+    //let imgList;
+    //sconsole.log(imgList.length);
+    //console.log(this.props.images);
     const imgList = this.props.images.map(image => {
+        const imgUrl = "https://opera-ski-3000.codio-box.uk".concat(image.imageURL);
+        //console.log(imgUrl);
         return (
-            <p>{image.imageURL}</p>
+            <img src={imgUrl}/>
         );
     })
     return (
