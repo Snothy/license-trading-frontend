@@ -65,7 +65,8 @@ class LoginForm extends React.Component {
         return <Redirect to={this.state.redirect} />
     }    
     return (
-        <Form {...formItemLayout} name="login" onFinish={this.login} scrollToFirstError >
+        <Form {...formItemLayout} name="login" onFinish={this.login} scrollToFirstError 
+        style={{ padding: '2% 20%' }}>
             <Form.Item name="username" label="Username" rules={usernameRules} >
                 <Input />
             </Form.Item>

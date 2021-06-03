@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import { Row, Col, Button } from 'antd';
 import { Link } from "react-router-dom";
-import ChatsCard from './chatsCard';
+import PendingChatsCard from './pendingChatsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 
-
-class Chats extends React.Component {
+class PendingChats extends React.Component {
 
     constructor(props) {
         super(props);
@@ -19,7 +18,7 @@ class Chats extends React.Component {
     static contextType = UserContext; //define user context for class
   
     componentDidMount() {
-        fetch('https://opera-ski-3000.codio-box.uk/api/chats', {headers: {"Authorization": "Bearer " + this.context.user.token } })
+        fetch('https://opera-ski-3000.codio-box.uk/api/chats/pending', {headers: {"Authorization": "Bearer " + this.context.user.token } })
         .then(status)
         .then(json)
         .then(data => {
@@ -36,28 +35,9 @@ class Chats extends React.Component {
       }
   
     render() {
-        let createButton, pendingButton;
-        if (this.context.user.isAdmin || this.context.user.isStaff) {
-            pendingButton = (
-            <>
-                <Button type="primary" >
-                    <Link to="/chats/pending">Pending Chats</Link>  
-                </Button>
-            </>
-            )
-        }
-        createButton = (
-            <Button type="primary" >
-                <Link to="/chats/create">Create Chat</Link>  
-            </Button>
-        )
-
         if (this.state.noneFound === true) {
             return(
             <>
-                {createButton}
-                {pendingButton}
-            
                 <h3>No chats found.</h3>
             </>
             )
@@ -71,15 +51,13 @@ class Chats extends React.Component {
             return (
             <div style={{padding:"15px"}} key={chat.chat_ID}>
                 <Col span={4}>
-                <ChatsCard {...chat} />
+                <PendingChatsCard {...chat} />
                 </Col>
             </div>
             )
         });
         return (
             <>
-                {createButton}
-                {pendingButton}
 
                 <Row type="flex" justify="space-around">
                     {cardList}
@@ -89,4 +67,4 @@ class Chats extends React.Component {
     }
 }
   
-export default Chats;
+export default PendingChats;

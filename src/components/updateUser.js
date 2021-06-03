@@ -43,7 +43,7 @@ const lastNameRules = [
     { required: true, message: 'Input your last name!', whitespace: true }
 ]
 
-class Register extends React.Component {
+class UpdateUser extends React.Component {
 
   constructor(props) {
       super(props);
@@ -110,4 +110,4 @@ class Register extends React.Component {
   };
 };
 
-export default Register;
+export default UpdateUser;

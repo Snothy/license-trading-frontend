@@ -1,29 +1,33 @@
 import React from 'react';
 import { Card } from 'antd';
 import { Link } from "react-router-dom";
-import ChatsCardIcon from './chatsCardIcon';
+import PendingChatsCardIcon from './pendingChatsCardIcon';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 
 const { Meta } = Card;
 
-class ChatsCard extends React.Component {
+class PendingChatsCard extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+        selected: false //setting it as a state is fine, as the chat will not be there upon re-render 
+      };
+      this.toggleStatusAccepted = this.toggleStatusAccepted.bind(this); //accessing 'this' inside the function
+
     //this.toggleLike = this.toggleLike.bind(this);
-    this.toggleStatusResolved = this.toggleStatusResolved.bind(this);
+    //this.togglePinned = this.togglePinned.bind(this);
   }
 
-
   static contextType = UserContext; //define user context for class
-  
-  toggleStatusResolved() {
-    //this.setState( {selected: true} );
+
+  toggleStatusAccepted() {
+    this.setState( {selected: true} );
 
     //Request to change status
     //console.log(this.props);
-    const data = {chat_ID: this.props.chat_ID, status: 3};
+    const data = { chat_ID: this.props.chat_ID, status: 2 };
     //console.log(JSON.stringify(data));
     fetch('https://opera-ski-3000.codio-box.uk/api/chats/pending', {
         method: "PUT",
@@ -40,27 +44,27 @@ class ChatsCard extends React.Component {
     });
   }
 
+
   //implement the status as an image?
   render() {
-
-    //console.log(this.props.status);
+    //console.log(this.props);
     return (
             <Card
                 style={{ width: 450 }}
                 hoverable={true}
                 actions={[
-                    <ChatsCardIcon type={this.props.status}
-                        id={this.props.chat_ID}/>,
-                    <ChatsCardIcon type='statusResolved'
-                        handleToggle={this.toggleStatusResolved} id={this.props.chat_ID}/>,
+                    <PendingChatsCardIcon type={this.props.status}
+                        handleToggle={this.toggleLike} id={this.props.chat_ID}/>,
+                    <PendingChatsCardIcon type="changeStatus"
+                        handleToggle={this.toggleStatusAccepted} id={this.props.chat_ID} selected={this.state.selected}/>
                   ]}>
-                        <Link to = {`chats/${this.props.chat_ID}`} >
-                <p>User: {this.props.firstName} {this.props.lastName}</p>
+                <p>User: {this.props.firstName} {this.props.lastName}
+                <Link to={`chats/${this.props.chat_ID}`} />
+                </p>
                 <p>{this.props.last_message}</p>
-                </Link>
             </Card>
     );
   }
 }
 
-export default ChatsCard; 
+export default PendingChatsCard; 
