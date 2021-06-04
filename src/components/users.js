@@ -3,13 +3,16 @@ import { Row, Col } from 'antd';
 import UsersCard from './usersCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
+import {errorHandler} from '../utilities/errorHandler';
 
 class Users extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            users: []
+            users: [],
+            error: false,
+            errorMsg: ""
         }
     }
 
@@ -23,11 +26,19 @@ class Users extends React.Component {
             this.setState({ users: data });
         })
         .catch(err => {
-            console.log("Error fetching users", err);
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
+            }
         });
       }
   
     render() {
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         if (!this.state.users.length) {
             return <h3>Loading users...</h3>
         }

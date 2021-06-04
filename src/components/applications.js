@@ -4,6 +4,7 @@ import ApplicationsCard from './applicationsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import { Link } from "react-router-dom";
+import {errorHandler} from '../utilities/errorHandler';
 
 class Applications extends React.Component {
 
@@ -11,7 +12,9 @@ class Applications extends React.Component {
         super(props);
         this.state = {
             noneFound : 0,
-            applications: []
+            applications: [],
+            error: false,
+            errorMsg: ""
         }
     }
 
@@ -29,11 +32,19 @@ class Applications extends React.Component {
             if (err.status === 404) {
                 this.setState( {noneFound: true});
             }
-            console.log("Error fetching applications", err);
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
+            }
         });
       }
   
     render() {
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         if (this.state.noneFound === true) {
             return (
                 <>

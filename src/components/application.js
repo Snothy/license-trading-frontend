@@ -4,6 +4,7 @@ import ApplicationCard from './applicationCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import { withRouter } from "react-router";
+import {errorHandler} from '../utilities/errorHandler';
 
 class Application extends React.Component {
 
@@ -11,7 +12,9 @@ class Application extends React.Component {
         super(props);
         this.state = {
             noneFound: 0,
-            application: []
+            application: [],
+            error: false,
+            errorMsg: ""
         }
 
     }
@@ -33,14 +36,20 @@ class Application extends React.Component {
         .catch(err => {
             if (err.status === 404) {
                 this.setState( {noneFound: true});
-            } else if (err.status === 403) { // FIX ERROR HANDLING PLS this is forbidden (no access)
-                this.setState( {noneFound: true})
             }
-            console.log("Error fetching application", err);
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
+            }
         });
       }
   
     render() {
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         if (this.state.noneFound === true) {
             return <h3>Application not found.</h3> 
         }

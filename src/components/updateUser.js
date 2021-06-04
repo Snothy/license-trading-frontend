@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { status, json } from '../utilities/requestHandlers';
+import { withRouter } from "react-router";
+import UserContext from '../contexts/user';
 
 const formItemLayout = {
   labelCol: { xs: { span: 24 }, sm: { span: 6 } },
@@ -12,35 +14,24 @@ const tailFormItemLayout = {
 
 const emailRules = [
     {type: 'email', message: 'Invalid email!'},
-    {required: true, message: 'Input your email!' }
+    {required: false, message: 'Input your email!' }
 ];
 
 const passwordRules = [
-    { required: true, message: 'Input your password!' }
+    { required: false, message: 'Input your password!' }
 ];
 
-const confirmRules = [
-    { required: true, message: 'Confirm your password!' },
-    ({ getFieldValue }) => ({
-        validator(rule, value) {
-            if (!value || getFieldValue('password') === value) {
-                return Promise.resolve();
-            }
-            return Promise.reject('The passwords dont match');
-        }
-    })
-];
 
 const usernameRules = [
-    { required: true, message: 'Input your username!', whitespace: true }
+    { required: false, message: 'Input your username!', whitespace: true }
 ]
 
 const firstNameRules = [
-    { required: true, message: 'Input your first name!', whitespace: true }
+    { required: false, message: 'Input your first name!', whitespace: true }
 ]
 
 const lastNameRules = [
-    { required: true, message: 'Input your last name!', whitespace: true }
+    { required: false, message: 'Input your last name!', whitespace: true }
 ]
 
 class UpdateUser extends React.Component {
@@ -49,29 +40,35 @@ class UpdateUser extends React.Component {
       super(props);
       this.onFinish = this.onFinish.bind(this);
   }
+
+  static contextType = UserContext; //define user context for class
   
   onFinish = (values) => {
-    const { confirm, ...data } = values;
-    fetch('https://opera-ski-3000.codio-box.uk/api/users/register/', {
-        method: "POST",
+    const { ...data } = values;
+    const id = this.props.match.params.id;
+    fetch(`https://opera-ski-3000.codio-box.uk/api/users/${id}`, {
+        method: "PUT",
         body: JSON.stringify(data),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + this.context.user.token 
         }        
     })
     .then(status)
     .then(json)
     .then(data => {
-        alert("User created")
+        alert("User updated")
         console.log(data);
     })
     .catch(error => {
-        alert("Creating user failed", error);
+        alert("Updating user failed", error);
     });  
   };
   
   render() {
     return (
+        <>
+        <h1>Insert data into the fields you wish to update</h1>
       <Form {...formItemLayout} name="register" onFinish={this.onFinish} scrollToFirstError
       style={{ padding: '2% 20%' }} >
         
@@ -80,11 +77,6 @@ class UpdateUser extends React.Component {
         </Form.Item>
 
         <Form.Item name="password" label="Password" rules={passwordRules} hasFeedback >
-            <Input.Password />
-        </Form.Item>
-
-        <Form.Item name="confirm" label="Confirm Password" dependencies={['password']}
-            hasFeedback rules={confirmRules}>
             <Input.Password />
         </Form.Item>
 
@@ -106,8 +98,9 @@ class UpdateUser extends React.Component {
             </Button>
         </Form.Item>
       </Form>
+      </>
     );
   };
 };
 
-export default UpdateUser;
+export default withRouter(UpdateUser);

@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 import RolesCard from './rolesCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
+import {errorHandler} from '../utilities/errorHandler';
 
 class Roles extends React.Component {
 
@@ -10,7 +11,9 @@ class Roles extends React.Component {
         super(props);
         this.state = {
             noneFound : 0,
-            roles: []
+            roles: [],
+            error: false,
+            errorMsg: ""
         }
     }
 
@@ -26,14 +29,19 @@ class Roles extends React.Component {
             //console.log(data);
         })
         .catch(err => {
-            if (err.status === 403) {
-                this.setState( {noneFound: true}); //FORBIDDEN HANDLE THIS.
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
             }
-            console.log("Error fetching roles", err);
         });
       }
   
     render() {
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         if (this.state.noneFound === true) {
             return <h3>Forbidden.</h3> 
         }

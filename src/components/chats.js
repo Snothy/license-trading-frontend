@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ChatsCard from './chatsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
+import {errorHandler} from '../utilities/errorHandler';
 
 
 class Chats extends React.Component {
@@ -12,8 +13,13 @@ class Chats extends React.Component {
         super(props);
         this.state = {
             noneFound : 0,
-            chats: []
+            chats: [],
+            isRendered: true,
+            chatId: "",
+            error: false,
+            errorMsg: ""
         }
+        this.handleRender = this.handleRender.bind(this);
     }
 
     static contextType = UserContext; //define user context for class
@@ -31,11 +37,35 @@ class Chats extends React.Component {
             if (err.status === 404) {
                 this.setState( {noneFound: true});
             }
-            console.log("Error fetching chats", err);
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
+            }
         });
+      }
+
+      
+      componentDidUpdate(prevProps, prevState){
+        if (prevState.isRendered !== this.state.isRendered) {
+            this.setState({isRendered: true});
+            console.log(this.state.chats);
+            this.state.chats = this.state.chats.filter(chat =>{
+                return chat.chat_ID !== this.state.chatId; 
+            })
+          }
+      }
+
+      handleRender(id) {
+        this.setState({isRendered: false});
+        this.setState({chatId : id});
       }
   
     render() {
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         let createButton, pendingButton;
         if (this.context.user.isAdmin || this.context.user.isStaff) {
             pendingButton = (
@@ -71,7 +101,7 @@ class Chats extends React.Component {
             return (
             <div style={{padding:"15px"}} key={chat.chat_ID}>
                 <Col span={4}>
-                <ChatsCard {...chat} />
+                {this.state.isRendered ?<ChatsCard isNotRendered={this.handleRender} {...chat} />: null}
                 </Col>
             </div>
             )

@@ -23,8 +23,9 @@ class PendingChatsCard extends React.Component {
   static contextType = UserContext; //define user context for class
 
   toggleStatusAccepted() {
-    this.setState( {selected: true} );
-
+    //console.log(this.props.chat_ID);
+    this.props.isNotRendered(this.props.chat_ID); //give the current chat id so it can get removed from the state list
+    //this.props.isNotRendered();
     //Request to change status
     //console.log(this.props);
     const data = { chat_ID: this.props.chat_ID, status: 2 };
@@ -39,11 +40,15 @@ class PendingChatsCard extends React.Component {
     })
     .then(status)
     .then(json)
+    .then(data => {
+        //console.log(data.ID);
+        
+    })
+
     .catch(err => {
         console.log("Error updating status", err);
     });
   }
-
 
   //implement the status as an image?
   render() {

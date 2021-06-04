@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import PendingChatsCard from './pendingChatsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
+import {errorHandler} from '../utilities/errorHandler';
 
 class PendingChats extends React.Component {
 
@@ -11,8 +12,13 @@ class PendingChats extends React.Component {
         super(props);
         this.state = {
             noneFound : 0,
-            chats: []
+            chats: [],
+            isRendered: true,
+            chatId: "",
+            error: false,
+            errorMsg: ""
         }
+        this.handleRender = this.handleRender.bind(this);
     }
 
     static contextType = UserContext; //define user context for class
@@ -23,6 +29,7 @@ class PendingChats extends React.Component {
         .then(json)
         .then(data => {
             //Can't get response status code here, so the check is done in the .catch error handler
+            //console.log(data);
             this.setState({ chats: data });
             //console.log(data);
         })
@@ -30,11 +37,43 @@ class PendingChats extends React.Component {
             if (err.status === 404) {
                 this.setState( {noneFound: true});
             }
-            console.log("Error fetching chats", err);
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
+            }
         });
+      }
+
+      componentDidUpdate(prevProps, prevState){
+        if (prevState.isRendered !== this.state.isRendered) {
+            //run the handler passed in by the parent component
+            //console.log(prevState.isSubmitted);
+            //console.log('b');
+            //console.log(this.state.isSubmitted)
+            //this.props.handleToggle(this.state.selected);
+            //this.setState( {isRendered: true});
+            //console.log(prevProps);
+            //console.log(prevState);
+            //console.log(this.state);
+            this.setState({isRendered: true});
+            console.log(this.state.chats);
+            this.state.chats = this.state.chats.filter(chat =>{
+                return chat.chat_ID !== this.state.chatId; //remove chat that had its status changed from the list so it gets unrendered
+            })
+          }
+      }
+
+      handleRender(id) {
+        this.setState({isRendered: false});
+        this.setState({chatId : id});
       }
   
     render() {
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         if (this.state.noneFound === true) {
             return(
             <>
@@ -51,7 +90,7 @@ class PendingChats extends React.Component {
             return (
             <div style={{padding:"15px"}} key={chat.chat_ID}>
                 <Col span={4}>
-                <PendingChatsCard {...chat} />
+                {this.state.isRendered ?<PendingChatsCard isNotRendered={this.handleRender} {...chat} />: null}
                 </Col>
             </div>
             )

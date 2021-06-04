@@ -20,7 +20,7 @@ class ChatsCard extends React.Component {
   
   toggleStatusResolved() {
     //this.setState( {selected: true} );
-
+    this.props.isNotRendered(this.props.chat_ID);
     //Request to change status
     //console.log(this.props);
     const data = {chat_ID: this.props.chat_ID, status: 3};
@@ -45,6 +45,7 @@ class ChatsCard extends React.Component {
 
     //console.log(this.props.status);
     return (
+
             <Card
                 style={{ width: 450 }}
                 hoverable={true}
@@ -54,11 +55,12 @@ class ChatsCard extends React.Component {
                     <ChatsCardIcon type='statusResolved'
                         handleToggle={this.toggleStatusResolved} id={this.props.chat_ID}/>,
                   ]}>
-                        <Link to = {`chats/${this.props.chat_ID}`} >
+                                <Link to = {`chats/${this.props.chat_ID}`} >
                 <p>User: {this.props.firstName} {this.props.lastName}</p>
                 <p>{this.props.last_message}</p>
                 </Link>
             </Card>
+           
     );
   }
 }

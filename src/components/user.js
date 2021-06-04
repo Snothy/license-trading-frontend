@@ -4,6 +4,7 @@ import UserCard from './userCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import { withRouter } from "react-router";
+import {errorHandler} from '../utilities/errorHandler';
 
 class User extends React.Component {
 
@@ -11,7 +12,9 @@ class User extends React.Component {
         super(props);
         this.state = {
             noneFound: 0,
-            user: []
+            user: [],
+            error: false,
+            errorMsg: ""
         }
 
     }
@@ -31,14 +34,22 @@ class User extends React.Component {
             //console.log(data);
         })
         .catch(err => {
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
+            }
             if (err.status === 404) {
                 this.setState( {noneFound: true});
             }
-            console.log("Error fetching user", err);
         });
       }
   
     render() {
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         if (this.state.noneFound === true) {
             return <h3>User not found.</h3> 
         }

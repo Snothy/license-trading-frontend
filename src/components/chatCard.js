@@ -21,7 +21,7 @@ class ChatCard extends React.Component {
 
     const newDate = new Date(Date.parse(this.props.date_sent));
     //console.log(newDate.toUTCString());
-    const name = this.props.firstName.concat(" ").concat(this.props.lastName)
+    const name = this.props.firstName//.concat(" ").concat(this.props.lastName)
     return (
         <>
             <Meta title= {name} />

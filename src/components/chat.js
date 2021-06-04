@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { Row, Col, Card, Form, Button, Input } from 'antd';
-import ChatsCard from './chatCard';
+import ChatCard from './chatCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import { withRouter } from "react-router";
-import CreateMessage from './createMessage';
+import {errorHandler} from '../utilities/errorHandler';
+//import CreateMessage from './createMessage';
 
 const formItemLayout = {
     labelCol: { xs: { span: 24 }, sm: { span: 6 } },
@@ -12,7 +13,7 @@ const formItemLayout = {
   };
 
 const message_contentRules = [
-    { required: true, message: 'Input your message!', whitespace: true  }
+    { required: false, message: 'Input your message!', whitespace: true  }
 ];
 
 
@@ -21,11 +22,14 @@ class Chat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            noneFound: 0,
-            chat: []
+            noneFound: false,
+            chat: [],
+            isSubmitted: false,
+            value: "",
+            error: false,
+            errorMsg: ""
         }
         this.onFinish = this.onFinish.bind(this);
-
     }
 
     static contextType = UserContext; //define user context for class
@@ -43,18 +47,34 @@ class Chat extends React.Component {
             //console.log(data);
         })
         .catch(err => {
-            if (err.status === 404) {
-                this.setState( {noneFound: true});
-            } else if (err.status === 403) { // FIX ERROR HANDLING PLS this is forbidden (no access)
-                this.setState( {noneFound: true})
+            const error = errorHandler(err);
+            if(error[0] === true) {
+                this.setState({error: error[1].error});
+                this.setState({errorMsg: error[1].errorMsg})
             }
-            console.log("Error fetching chat", err);
+            //console.log(error);
+            if(err.status === 404) {
+                this.setState({noneFound: true});
+            }
         });
+      }
+
+
+      componentDidUpdate(prevProps, prevState){
+        if (prevState.isSubmitted !== this.state.isSubmitted) {
+            //run the handler passed in by the parent component
+            //console.log(prevState.isSubmitted);
+            //console.log('b');
+            //console.log(this.state.isSubmitted)
+            //this.props.handleToggle(this.state.selected);
+            this.setState( {isSubmitted: false});
+          }
       }
 
       onFinish = (values) => {
         const {...data } = values;
         const id = this.props.match.params.id;
+        this.setState({noneFound: false});
         fetch(`https://opera-ski-3000.codio-box.uk/api/chats/${id}`, {
             method: "POST",
             body: JSON.stringify(data),
@@ -67,8 +87,9 @@ class Chat extends React.Component {
         .then(json)
         .then(data => {
             //alert("Message created")
-            console.log(data);
-            //this.setState( {chat: data} )
+            //console.log(data);
+           this.state.chat.push(data.chatMessage[0]);
+            this.setState( { isSubmitted: true } );
         })
         .catch(error => {
             alert("Creating message failed");
@@ -76,50 +97,63 @@ class Chat extends React.Component {
         });  
     };
 
-    handleClick = () => {
-        // force a re-render
-        this.forceUpdate();
-      };
+
   
       render() {
+        //console.log(this.state.chat.slice(-1)[0]);
+          //const formRef = React.createRef();
           let chatMessage;
-          chatMessage = (
-            <div>
-                <Form {...formItemLayout} name="register" onFinish={this.onFinish} scrollToFirstError >
-                    
-                    <Form.Item  name="message_content" label="Message" rules={message_contentRules} >
-                        <Input />
-                    </Form.Item>    
-                    <Form.Item >
-                        <Button type="primary" htmlType="submit">
-                            Send
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-          )
-          console.log(this.state.chat);
+          //New chat messages appear dynamically because of the of the change of state
+          //Upon submitting, the stat.chat get updated with the new message and state.isSubmitted is true
+          //if state.isSubmitted is true, i render a new ChatCard that dispalys the message
+          //Then thanks to componentDidUpdate, the state gets reverted back to false, awaiting a new message
+            chatMessage = (
+                <div>
+                    <Form {...formItemLayout} name="register" onFinish={this.onFinish} scrollToFirstError >
+                        
+                        <Form.Item name="message_content" label="Message" rules={message_contentRules} >
+                            <Input />
+                        </Form.Item>    
+                        <Form.Item >
+                            <Button
+                                type="primary" htmlType="submit">
+                                Send
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                    {this.state.isSubmitted ?
+                    <ChatCard {...this.state.chat.slice(-1)[0]} /> :
+                    null
+                        }
+                </div>
+            )
+            const cardList = this.state.chat.map(message => {
+                return (
+                <div style={{padding:"15px"}} key={message.ID}>
+                    <Col span={4}>
+                        <ChatCard {...message} />
+                    </Col>
+                </div>
+                )
+            });
+          //console.log(this.state.chat);
+        if (this.state.error) {
+            return(
+            <h1>{this.state.errorMsg}</h1>
+            )}
         if (this.state.noneFound === true) {
-            return <Card>
-                <>
+            return (
+            <Card>
                     <p>No messages.</p>
+                    {cardList}
                     {chatMessage}
-                </>
             </Card>
-        }
+            )}
         //console.log(!this.state.chats.length)
         if (!this.state.chat.length) {
             return <h3>Loading chat...</h3>
         }
-        const cardList = this.state.chat.map(message => {
-            return (
-            <div style={{padding:"15px"}} key={message.ID}>
-                <Col span={4}>
-                    <ChatsCard {...message} />
-                </Col>
-            </div>
-            )
-        });
+
         return (
             <>
             <Row type="flex" justify="space-around">
@@ -128,6 +162,7 @@ class Chat extends React.Component {
                 hoverable={true}>
                     {cardList}
                     {chatMessage}
+
                 </Card>
             </Row>
             </>
@@ -137,115 +172,3 @@ class Chat extends React.Component {
   
 export default withRouter(Chat);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-import React, { useContext } from 'react';
-import { Row, Col, Card, Form, Button } from 'antd';
-import ChatsCard from './chatCard';
-import { status, json } from '../utilities/requestHandlers';
-import UserContext from '../contexts/user';
-import { withRouter } from "react-router";
-import CreateMessage from './createMessage';
-
-
-class Chat extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            noneFound: 0,
-            chat: []
-        }
-
-    }
-
-    static contextType = UserContext; //define user context for class
-  
-    componentDidMount() {
-        const id = this.props.match.params.id; //using withRouter, as useParams cannot be used within a class component
-        //let { ID } = useParams();
-        fetch(`https://opera-ski-3000.codio-box.uk/api/chats/${id}`, {headers: {"Authorization": "Bearer " + this.context.user.token } })
-        .then(status)
-        .then(json)
-        .then(data => {
-            //console.log(this.props.match.params);
-            this.setState({ chat: data });
-            //console.log(this.state.user);
-            //console.log(data);
-        })
-        .catch(err => {
-            if (err.status === 404) {
-                this.setState( {noneFound: true});
-            } else if (err.status === 403) { // FIX ERROR HANDLING PLS this is forbidden (no access)
-                this.setState( {noneFound: true})
-            }
-            console.log("Error fetching chat", err);
-        });
-      }
-
-      handleClick = () => {
-        //Force a re-render.
-        this.forceUpdate();
-      };
-
-  
-      render() {
-        if (this.state.noneFound === true) {
-            return <Card>
-                <>
-                    <p>No messages.</p>
-                    <CreateMessage />
-                </>
-            </Card>
-        }
-        //console.log(!this.state.chats.length)
-        if (!this.state.chat.length) {
-            return <h3>Loading chat...</h3>
-        }
-        const cardList = this.state.chat.map(message => {
-            return (
-            <div style={{padding:"15px"}} key={message.ID}>
-                <Col span={4}>
-                    <ChatsCard {...message} />
-                </Col>
-            </div>
-            )
-        });
-        return (
-            <>
-            <Row type="flex" justify="space-around">
-                <Card
-                style={{ width: 750 }}
-                hoverable={true}>
-                    {cardList}
-
-                    <CreateMessage onClick = {this.handleClick} />
-
-                </Card>
-            </Row>
-
-            </>
-        );
-    }
-}
-  
-export default withRouter(Chat);
-*/
