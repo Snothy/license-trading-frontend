@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import UserCard from './userCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import { withRouter } from "react-router";
 import {errorHandler} from '../utilities/errorHandler';
+import { Link } from "react-router-dom";
 
 class User extends React.Component {
 
@@ -46,6 +47,16 @@ class User extends React.Component {
       }
   
     render() {
+        let manageRoles;
+        const id = this.props.match.params.id;
+        if(this.context.user.isAdmin) {
+            manageRoles = (
+                <>
+                <Button type="primary" >
+                    <Link to={`/users/${id}/roles`}>Manage Roles</Link>  
+                </Button>
+                </>
+            )}
         if (this.state.error) {
             return(
             <h1>{this.state.errorMsg}</h1>
@@ -58,6 +69,7 @@ class User extends React.Component {
         }
         return (
             <div style={{padding:"15px"}} key={this.state.user.ID}>
+                {manageRoles}
                 <Col span={4}>
                     <Row type="flex" justify="space-around">
                     <UserCard {...this.state.user[0]}/>
