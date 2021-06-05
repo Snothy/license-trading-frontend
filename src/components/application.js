@@ -14,9 +14,12 @@ class Application extends React.Component {
             noneFound: 0,
             application: [],
             error: false,
-            errorMsg: ""
+            errorMsg: "",
+            updateStatus: false,
+            applicationStatus: 1,
+            viewOnly: true
         }
-
+        this.handleRender = this.handleRender.bind(this);
     }
 
     static contextType = UserContext; //define user context for class
@@ -43,7 +46,30 @@ class Application extends React.Component {
                 this.setState({errorMsg: error[1].errorMsg})
             }
         });
+        if(this.context.user.isAdmin || this.context.user.isStaff) {
+            this.setState({viewOnly: false});
+        }
       }
+
+
+      handleRender(statusCode) {
+          console.log(statusCode);
+          console.log(this.state.application[0]);
+        this.setState({updateStatus:true})
+        this.setState({applicationStatus : statusCode});
+      }
+
+      componentDidUpdate(prevProps, prevState){
+        if (prevState.applicationStatus !== this.state.applicationStatus) {
+            //this.setState({isRendered: true});
+            //console.log(this.state.chats);
+            //console.log(this.state.application);
+            this.state.application[0].application.status = this.state.applicationStatus;
+            this.setState({updateStatus: false});
+
+          }
+      }
+
   
     render() {
         if (this.state.error) {
@@ -60,7 +86,8 @@ class Application extends React.Component {
             <div style={{padding:"15px"}} key={this.state.application.ID}>
                 <Col span={4}>
                     <Row type="flex" justify="space-around">
-                    <ApplicationCard {...this.state.application[0]}/>
+                <ApplicationCard viewOnly = {this.state.viewOnly} applicationStatus = {this.handleRender} {...this.state.application[0]}/>
+                    
                     </Row>
                 </Col>
             </div>

@@ -14,8 +14,13 @@ class Applications extends React.Component {
             noneFound : 0,
             applications: [],
             error: false,
-            errorMsg: ""
+            errorMsg: "",
+            updateStatus: false,
+            applicationStatus: 1,
+            applicationID: 0,
+            viewOnly: true
         }
+        this.handleRender = this.handleRender.bind(this);
     }
 
     static contextType = UserContext; //define user context for class
@@ -38,7 +43,35 @@ class Applications extends React.Component {
                 this.setState({errorMsg: error[1].errorMsg})
             }
         });
+        if(this.context.user.isAdmin || this.context.user.isStaff) {
+            this.setState({viewOnly: false});
+        }
       }
+
+      componentDidUpdate(prevProps, prevState){
+        if (prevState.applicationStatus !== this.state.applicationStatus) {
+            //this.setState({isRendered: true});
+            //console.log(this.state.chats);
+            //console.log(this.state.application);
+            //this.state.application[0].application.status = this.state.applicationStatus;
+            this.state.applications.filter(application =>{
+                if(application.ID === this.state.applicationID){
+                    return application.status = this.state.applicationStatus;
+                }
+            })
+            this.setState({updateStatus: false});
+            this.setState({applicationID: 0});
+
+          }
+      }
+
+      handleRender(statusCode, ID) {
+        //console.log(statusCode);
+        //console.log(this.state.application[0]);
+      this.setState({updateStatus:true})
+      this.setState({applicationStatus : statusCode});
+      this.setState({applicationID : ID});
+    }
   
     render() {
         if (this.state.error) {
@@ -62,7 +95,7 @@ class Applications extends React.Component {
             return (
             <div style={{padding:"15px"}} key={application.ID}>
                 <Col span={4}>
-                <ApplicationsCard {...application} />
+                <ApplicationsCard viewOnly = {this.state.viewOnly} applicationStatus = {this.handleRender} {...application} />
                 </Col>
             </div>
             )

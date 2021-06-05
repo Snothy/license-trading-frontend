@@ -59,7 +59,7 @@ class PendingChatsCard extends React.Component {
                 hoverable={true}
                 actions={[
                     <PendingChatsCardIcon type={this.props.status}
-                        handleToggle={this.toggleLike} id={this.props.chat_ID}/>,
+                     id={this.props.chat_ID}/>,
                     <PendingChatsCardIcon type="changeStatus"
                         handleToggle={this.toggleStatusAccepted} id={this.props.chat_ID} selected={this.state.selected}/>
                   ]}>
