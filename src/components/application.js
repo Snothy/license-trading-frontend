@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import ApplicationCard from './applicationCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import { withRouter } from "react-router";
 import {errorHandler} from '../utilities/errorHandler';
+import { Link } from "react-router-dom";
 
 class Application extends React.Component {
 
@@ -53,8 +54,8 @@ class Application extends React.Component {
 
 
       handleRender(statusCode) {
-          console.log(statusCode);
-          console.log(this.state.application[0]);
+          //console.log(statusCode);
+          //console.log(this.state.application[0]);
         this.setState({updateStatus:true})
         this.setState({applicationStatus : statusCode});
       }
@@ -72,6 +73,7 @@ class Application extends React.Component {
 
   
     render() {
+        //console.log(this.state.application);
         if (this.state.error) {
             return(
             <h1>{this.state.errorMsg}</h1>
@@ -84,6 +86,9 @@ class Application extends React.Component {
         }
         return (
             <div style={{padding:"15px"}} key={this.state.application.ID}>
+                <Button type="primary" >
+                    <Link to={`/applications/${this.state.application[0].application.ID}/update`}>Update application</Link>  
+                </Button>
                 <Col span={4}>
                     <Row type="flex" justify="space-around">
                 <ApplicationCard viewOnly = {this.state.viewOnly} applicationStatus = {this.handleRender} {...this.state.application[0]}/>
