@@ -5,8 +5,6 @@ import PendingChatsCardIcon from './pendingChatsCardIcon';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 
-const { Meta } = Card;
-
 class PendingChatsCard extends React.Component {
 
   constructor(props) {

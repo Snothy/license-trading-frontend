@@ -8,9 +8,6 @@ import PlusCircleFilled from '@ant-design/icons/PlusCircleFilled';
 import MinusCircleOutlined from '@ant-design/icons/MinusCircleOutlined';  
 import MinusCircleFilled from '@ant-design/icons/MinusCircleFilled';  
 
-import { status, json } from '../utilities/requestHandlers';
-
-
 function getIcon (theme, iconType) {
   let Icon;
 

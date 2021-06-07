@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Row, Col, Button } from 'antd';
 import ApplicationCard from './applicationCard';
 import { status, json } from '../utilities/requestHandlers';
@@ -65,7 +65,9 @@ class Application extends React.Component {
             //this.setState({isRendered: true});
             //console.log(this.state.chats);
             //console.log(this.state.application);
+            // eslint-disable-next-line
             this.state.application[0].application.status = this.state.applicationStatus;
+            //this.setState({application[0].status: this.state.applicationStatus})
             this.setState({updateStatus: false});
 
           }

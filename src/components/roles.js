@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Row, Col, Button } from 'antd';
 import RolesCard from './rolesCard';
 import { status, json } from '../utilities/requestHandlers';
@@ -43,6 +43,7 @@ class Roles extends React.Component {
 
       componentDidUpdate(prevProps, prevState){
         if (prevState.isRendered !== this.state.isRendered) {
+            // eslint-disable-next-line
             this.state.roles = this.state.roles.filter(role =>{
                 return role.ID !== this.state.roleID; //remove the role from the list
             })

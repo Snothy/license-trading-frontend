@@ -5,8 +5,6 @@ import ChatsCardIcon from './chatsCardIcon';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 
-const { Meta } = Card;
-
 class ChatsCard extends React.Component {
 
   constructor(props) {

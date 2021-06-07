@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from 'antd';
 import { Link } from "react-router-dom";
 import UserSwitchOutlined from '@ant-design/icons/UserSwitchOutlined';
-import { Icon } from 'antd';
 import { withRouter } from "react-router";
 
 const { Meta } = Card;

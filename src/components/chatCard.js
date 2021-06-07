@@ -6,10 +6,6 @@ const { Meta } = Card;
 
 class ChatCard extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   //implement the status as an image?
   render() {
       /*
@@ -21,10 +17,10 @@ class ChatCard extends React.Component {
 
     const newDate = new Date(Date.parse(this.props.date_sent));
     //console.log(newDate.toUTCString());
-    const name = this.props.firstName//.concat(" ").concat(this.props.lastName)
+    const name = this.props.firstName.concat(" ").concat(this.props.lastName)
     return (
         <>
-            <Meta title= {name} />
+            <Meta  style={{ width: 750 }} title= {name} />
             <p style={{ width: 750 }}>{this.props.message_content}</p>
             <p style={{ width: 500 }}>{newDate.toUTCString()}</p>
         </>

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Row, Col, Form, Select, Card } from 'antd';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
@@ -100,6 +100,7 @@ class UserRoles extends React.Component {
                 this.state.roles.push(role);
                 //console.log(this.state)
             }
+            return true;
         })
         //console.log('assigned role obj v');
         //console.log(assignedRoleObj);
@@ -135,6 +136,7 @@ class UserRoles extends React.Component {
                 this.state.roles.pop(role);
                 //console.log(this.state)
             }
+            return true;
         })
         this.setState( { isAssigned: false } );
         alert("Role removed");

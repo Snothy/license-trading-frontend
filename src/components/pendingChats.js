@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-import { Row, Col, Button } from 'antd';
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Row, Col } from 'antd';
 import PendingChatsCard from './pendingChatsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
@@ -58,6 +57,7 @@ class PendingChats extends React.Component {
             //console.log(this.state);
             this.setState({isRendered: true});
             //console.log(this.state.chats);
+            // eslint-disable-next-line
             this.state.chats = this.state.chats.filter(chat =>{
                 return chat.chat_ID !== this.state.chatId; //remove chat that had its status changed from the list so it gets unrendered
             })

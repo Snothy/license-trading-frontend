@@ -6,9 +6,6 @@ import CheckOutlined from '@ant-design/icons/CheckOutlined';       //resolved
 import PlusCircleOutlined from '@ant-design/icons/PlusCircleOutlined';  
 import PlusCircleFilled from '@ant-design/icons/PlusCircleFilled';  
 
-import { status, json } from '../utilities/requestHandlers';
-
-
 function getIcon (theme, iconType) {
   let Icon;
 

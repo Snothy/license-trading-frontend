@@ -5,10 +5,6 @@ const { Meta } = Card;
 
 class RoleCard extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   //implement the status as an image?
   render() {
     //console.log(this.props);

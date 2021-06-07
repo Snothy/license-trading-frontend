@@ -4,10 +4,6 @@ import UserContext from '../contexts/user';
 
 class CreateChat extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     static contextType = UserContext; //define user context for class
     
     componentDidMount() {

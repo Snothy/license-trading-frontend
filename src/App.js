@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Layout } from 'antd';
 import './App.css';
 
@@ -107,7 +107,7 @@ class App extends React.Component {
                     </Switch>
                 </Content>
 
-                <Footer style={{ textAlign: 'center' }}>Absolute gamer moment.</Footer>
+                <Footer style={{ textAlign: 'center' }}>License approval.</Footer>
 
                 </Layout>
             </Router>

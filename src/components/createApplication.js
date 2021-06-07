@@ -1,5 +1,5 @@
 import React from 'react';
-import {Upload, message, Form, Input, Button } from 'antd';
+import { Form, Input} from 'antd';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import Uploader from './uploader';
@@ -7,9 +7,6 @@ import Uploader from './uploader';
 const formItemLayout = {
   labelCol: { xs: { span: 24 }, sm: { span: 6 } },
   wrapperCol: { xs: { span: 24 }, sm: { span: 12 } }
-};
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 6 } },
 };
 
 const companyNameRules = [

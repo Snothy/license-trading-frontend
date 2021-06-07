@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Row, Col, Button } from 'antd';
 import { Link } from "react-router-dom";
 import ChatsCard from './chatsCard';
@@ -49,7 +49,8 @@ class Chats extends React.Component {
       componentDidUpdate(prevProps, prevState){
         if (prevState.isRendered !== this.state.isRendered) {
             this.setState({isRendered: true});
-            console.log(this.state.chats);
+            //console.log(this.state.chats);
+            // eslint-disable-next-line
             this.state.chats = this.state.chats.filter(chat =>{
                 return chat.chat_ID !== this.state.chatId; 
             })

@@ -6,10 +6,6 @@ const { Meta } = Card;
 
 class UsersCard extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
         <Link to = {`users/${this.props.ID}`} >

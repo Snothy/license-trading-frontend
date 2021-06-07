@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Row, Col, Card, Form, Button, Input } from 'antd';
 import ChatCard from './chatCard';
 import { status, json } from '../utilities/requestHandlers';
@@ -102,8 +102,8 @@ class Chat extends React.Component {
       render() {
         //console.log(this.state.chat.slice(-1)[0]);
           //const formRef = React.createRef();
-          console.log(this.state.chat);
-          console.log(!this.state.chat.length);
+          //console.log(this.state.chat);
+          //console.log(!this.state.chat.length);
           let chatMessage;
           //New chat messages appear dynamically because of the of the change of state
           //Upon submitting, the stat.chat get updated with the new message and state.isSubmitted is true

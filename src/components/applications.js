@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Row, Col, Button, Input, Select } from 'antd';
 import ApplicationsCard from './applicationsCard';
 import { status, json } from '../utilities/requestHandlers';
@@ -62,8 +62,9 @@ class Applications extends React.Component {
             if(application.ID === this.state.applicationID){
                 //console.log(application.status);
                 //console.log(this.state.applicationStatus);
-                return application.status = this.state.applicationStatus;
+                application.status = this.state.applicationStatus;
             }
+            return application.status;
         })
         this.setState({updateStatus: false});
         this.setState({applicationID: 0});

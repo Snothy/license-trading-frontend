@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Row, Col, Button } from 'antd';
 import UserCard from './userCard';
 import { status, json } from '../utilities/requestHandlers';

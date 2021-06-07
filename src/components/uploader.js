@@ -1,7 +1,6 @@
 import React from 'react';
-import { Form, Input, Upload, message, Button } from 'antd';
+import { Form, Upload, message, Button } from 'antd';
 //import { UploadOutlined } from '@ant-design/icons'; crashed my app..
-import {useContext} from 'react';
 import UserContext from '../contexts/user';
 
 class Uploader extends React.Component {

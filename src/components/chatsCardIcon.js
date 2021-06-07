@@ -7,8 +7,6 @@ import CheckCircleOutlined from '@ant-design/icons/CheckCircleOutlined';
 import CheckCircleFilled from '@ant-design/icons/CheckCircleFilled';  
 import UserContext from '../contexts/user';
 
-import { status, json } from '../utilities/requestHandlers';
-
 function getIcon (theme, iconType) {
     let Icon;
   
