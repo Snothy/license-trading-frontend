@@ -66,11 +66,20 @@ class UpdateUser extends React.Component {
   };
   
   render() {
+      const user = this.props.location.state.user;
+      console.log(user);
     return (
         <>
         <h1>Insert data into the fields you wish to update</h1>
       <Form {...formItemLayout} name="register" onFinish={this.onFinish} scrollToFirstError
-      style={{ padding: '2% 20%' }} >
+      style={{ padding: '2% 20%' }} 
+      initialValues = {{
+          username: user.username,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName
+      }}
+      >
         
         <Form.Item name="email" label="Email" rules={emailRules} >
             <Input />

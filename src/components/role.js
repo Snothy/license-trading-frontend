@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import RoleCard from './roleCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
 import {errorHandler} from '../utilities/errorHandler';
 
 class Role extends React.Component {
@@ -46,6 +47,8 @@ class Role extends React.Component {
       }
   
       render() {
+          //console.log(this.state.role[0]);
+        const id = this.props.match.params.id;
         if (this.state.error) {
             return(
             <h1>{this.state.errorMsg}</h1>
@@ -59,6 +62,11 @@ class Role extends React.Component {
         }
         return (
             <div style={{padding:"15px"}} key={this.state.role.ID}>
+                <Button type="primary" >
+                    <Link to={{ pathname: `/roles/${id}/update`, state:{
+                        role: this.state.role[0]
+                        } }}>Update Role</Link>  
+                </Button>
                 <Col span={4}>
                     <Row type="flex" justify="space-around">
                     <RoleCard {...this.state.role[0]}/>

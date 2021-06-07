@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import RolesCard from './rolesCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
 import {errorHandler} from '../utilities/errorHandler';
+import { Link } from "react-router-dom";
 
 class Roles extends React.Component {
 
@@ -13,8 +14,11 @@ class Roles extends React.Component {
             noneFound : 0,
             roles: [],
             error: false,
-            errorMsg: ""
+            errorMsg: "",
+            isRendered: true,
+            roleID: 0
         }
+        this.handleRender = this.handleRender.bind(this);
     }
 
     static contextType = UserContext; //define user context for class
@@ -36,6 +40,21 @@ class Roles extends React.Component {
             }
         });
       }
+
+      componentDidUpdate(prevProps, prevState){
+        if (prevState.isRendered !== this.state.isRendered) {
+            this.state.roles = this.state.roles.filter(role =>{
+                return role.ID !== this.state.roleID; //remove the role from the list
+            })
+            this.setState({isRendered: true});
+          }
+      }
+
+      handleRender(ID) {
+        this.setState({isRendered: false});
+        this.setState({roleID : ID});
+    }
+  
   
     render() {
         if (this.state.error) {
@@ -52,15 +71,20 @@ class Roles extends React.Component {
             return (
             <div style={{padding:"15px"}} key={role.ID}>
                 <Col span={4}>
-                <RolesCard {...role} />
+                {this.state.isRendered ?<RolesCard  isNotRendered={this.handleRender} {...role} />: null}
                 </Col>
             </div>
             )
         });
         return (
+            <>
+            <Button type="primary" >
+                <Link to="/roles/create">Create Role</Link>  
+            </Button>
             <Row type="flex" justify="space-around">
                 {cardList}
             </Row>
+            </>
         );
     }
 }

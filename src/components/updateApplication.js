@@ -64,11 +64,20 @@ class UpdateApplication extends React.Component {
   };
   
   render() {
+      const application = this.props.location.state.application;
     return (
         <>
         <h1>Insert data into the fields you wish to update</h1>
       <Form {...formItemLayout} name="register" onFinish={this.onFinish} scrollToFirstError
-      style={{ padding: '2% 20%' }} >
+      style={{ padding: '2% 20%' }} 
+      initialValues = {{
+          company_name: application.company_name,
+          address: application.address,
+          postcode: application.postcode,
+          telephone_number: application.telephone_number,
+          insurance_company: application.insurance_company
+      }}
+      >
         
         <Form.Item name="company_name" label="Company name" rules={companyNameRules} >
                 <Input />

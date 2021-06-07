@@ -5,6 +5,7 @@ export function errorHandler(err) {
     }
     const error = true;
     let errMsg;
+    //just to avoid repeat code
     if(statusCode === 400) {
         errMsg = '400 Internal Server Error';
     } else if (statusCode === 401) {

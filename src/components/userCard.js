@@ -23,13 +23,21 @@ class UserCard extends React.Component {
     //console.log(this.props);
     const Icon = UserSwitchOutlined
     const id = this.props.match.params.id;
+    //console.log(this.props);
     return (
             <Card
                 style={{ width: 450 }}
                 hoverable={true}
             
                 actions={[
-                    <Link to = {`/users/${id}/update`}>
+                    <Link to = {{pathname: `/users/${id}/update`, state:{
+                        user: {
+                            username: this.props.username,
+                            lastName: this.props.lastName,
+                            firstName: this.props.firstName,
+                            email: this.props.email
+                        }
+                    }}}>
                     <Icon onClick={this.onClick}/>
                     </Link>
                   ]}

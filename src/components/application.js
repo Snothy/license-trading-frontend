@@ -87,7 +87,9 @@ class Application extends React.Component {
         return (
             <div style={{padding:"15px"}} key={this.state.application.ID}>
                 <Button type="primary" >
-                    <Link to={`/applications/${this.state.application[0].application.ID}/update`}>Update application</Link>  
+                    <Link to={{pathname: `/applications/${this.state.application[0].application.ID}/update`, state:{
+                        application: this.state.application[0].application
+                    }}}>Update application</Link>  
                 </Button>
                 <Col span={4}>
                     <Row type="flex" justify="space-around">

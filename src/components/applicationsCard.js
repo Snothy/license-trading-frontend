@@ -102,7 +102,6 @@ this.props.applicationStatus(3, this.props.ID);
                 <Meta title={this.props.company_name} />
                 <p>Address: {this.props.address}</p>
                 <p>Contact: {this.props.telephone_number}</p>
-                <p>Status: {this.props.status}</p>
                 </Link>
             </Card>
     );

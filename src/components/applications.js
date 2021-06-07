@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Input, Select } from 'antd';
 import ApplicationsCard from './applicationsCard';
 import { status, json } from '../utilities/requestHandlers';
 import UserContext from '../contexts/user';
@@ -18,9 +18,13 @@ class Applications extends React.Component {
             updateStatus: false,
             applicationStatus: 1,
             applicationID: 0,
-            viewOnly: true
+            viewOnly: true,
+            filter: "",
+            statusFilter: 0
         }
         this.handleRender = this.handleRender.bind(this);
+        this.filterUpdate = this.filterUpdate.bind(this);
+        this.statusFilterUpdate = this.statusFilterUpdate.bind(this);
     }
 
     static contextType = UserContext; //define user context for class
@@ -48,32 +52,45 @@ class Applications extends React.Component {
         }
       }
 
-      componentDidUpdate(prevProps, prevState){
-        if (prevState.applicationStatus !== this.state.applicationStatus) {
-            //this.setState({isRendered: true});
-            //console.log(this.state.chats);
-            //console.log(this.state.application);
-            //this.state.application[0].application.status = this.state.applicationStatus;
-            this.state.applications.filter(application =>{
-                if(application.ID === this.state.applicationID){
-                    return application.status = this.state.applicationStatus;
-                }
-            })
-            this.setState({updateStatus: false});
-            this.setState({applicationID: 0});
+    componentDidUpdate(prevProps, prevState){
+    if (prevState.applicationStatus !== this.state.applicationStatus) {
+        //this.setState({isRendered: true});
+        //console.log(this.state.chats);
+        //console.log(this.state.application);
+        //this.state.application[0].application.status = this.state.applicationStatus;
+        this.state.applications.filter(application =>{
+            if(application.ID === this.state.applicationID){
+                //console.log(application.status);
+                //console.log(this.state.applicationStatus);
+                return application.status = this.state.applicationStatus;
+            }
+        })
+        this.setState({updateStatus: false});
+        this.setState({applicationID: 0});
+        this.setState({applicationStatus: 0});
 
-          }
-      }
+        }
+    }
 
-      handleRender(statusCode, ID) {
-        //console.log(statusCode);
-        //console.log(this.state.application[0]);
-      this.setState({updateStatus:true})
-      this.setState({applicationStatus : statusCode});
-      this.setState({applicationID : ID});
+    handleRender(statusCode, ID) {
+    //console.log(statusCode);
+    //console.log(this.state.application[0]);
+    this.setState({updateStatus:true})
+    this.setState({applicationStatus : statusCode});
+    this.setState({applicationID : ID});
+    }
+
+    filterUpdate(event) {
+        this.setState( { filter: event.target.value } )
+    }
+
+    statusFilterUpdate(value, event) {
+        this.setState( {statusFilter: value});
+        //if value === 0 => no filtering by status
     }
   
     render() {
+        const Option = Select;
         if (this.state.error) {
             return(
             <h1>{this.state.errorMsg}</h1>
@@ -91,7 +108,28 @@ class Applications extends React.Component {
         if (!this.state.applications.length) {
             return <h3>Loading applications...</h3>
         }
-        const cardList = this.state.applications.map(application => {
+
+
+        
+
+        let filteredApplications;
+        filteredApplications = this.state.applications.filter((application) => {
+            return application.company_name.toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1; //if the company name doesnt match the filter, we dont return it
+            //set both the company_name and the filter input to lower case
+        });
+
+        filteredApplications = filteredApplications.filter((application) => {
+            if(this.state.statusFilter === 0) {
+                return application;
+            }
+            //console.log(application.status);
+            //console.log(this.state.statusFilter);
+            return application.status === this.state.statusFilter;
+        });
+
+
+
+        const cardList = filteredApplications.map(application => {
             return (
             <div style={{padding:"15px"}} key={application.ID}>
                 <Col span={4}>
@@ -100,13 +138,41 @@ class Applications extends React.Component {
             </div>
             )
         });
+
         return (
             <>
                 <Button type="primary" >
                     <Link to="/applications/create">Create Application</Link>  
                 </Button>
+                <h1 style={{textAlign: 'center'}}>Search:</h1>
+                <Row type="flex" justify="center" align="middle">
+                <Input placeholder="Search for company name" type="text" value = {this.state.filter} onChange= {this.filterUpdate}
+                    style = {{
+                        width: 350,
+                        display: 'inline-flex', justifyContent: 'center', alignItems: 'center'
+                    }}/>
+
+
+
+
+
+
+                <Row>
+                <Select style={{width:"150px"}} defaultValue={0} onSelect={(value, event) => this.statusFilterUpdate(value, event)}>
+                    <Option style={{width:"150px"}}key={0} value={0}>Select Status</Option>
+                    <Option style={{width:"150px"}}key={1} value={1}>Pending</Option>
+                    <Option style={{width:"150px"}}key={2} value={2}>Accepted</Option>
+                    <Option style={{width:"150px"}}key={3} value={3}>Rejected</Option>
+                </Select>
+                </Row>
+
+
+
+
+
+                </Row>
                 <Row type="flex" justify="space-around">
-                {cardList}
+                    {cardList}
                 </Row>
             </>
         );

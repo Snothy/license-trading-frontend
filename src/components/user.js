@@ -47,13 +47,14 @@ class User extends React.Component {
       }
   
     render() {
+        console.log(this.state.user[0]);
         let manageRoles;
         const id = this.props.match.params.id;
         if(this.context.user.isAdmin) {
             manageRoles = (
                 <>
                 <Button type="primary" >
-                    <Link to={`/users/${id}/roles`}>Manage Roles</Link>  
+                    <Link to={{pathname: `/users/${id}/roles`}}>Manage Roles</Link>  
                 </Button>
                 </>
             )}

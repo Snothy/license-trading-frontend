@@ -20,6 +20,8 @@ import PendingChats from './components/pendingChats';
 import UpdateUser from './components/updateUser';
 import UserRoles from './components/userRoles';
 import UpdateApplication from './components/updateApplication';
+import CreateRole from './components/createRole';
+import UpdateRole from './components/updateRole';
 
 import UserContext from './contexts/user';
 
@@ -85,7 +87,9 @@ class App extends React.Component {
                     <Switch>
                         <Route path="/users/:id/roles" children={<UserRoles />} />
                         <Route path="/users/:id/update" children={<UpdateUser />} />
-                        <Route path="/applications/:id/update" children={<UpdateApplication />} />
+                        <Route path="/roles/:id/update" children={<UpdateRole />} exact/>
+                        <Route path="/applications/:id/update" children={<UpdateApplication />} exact />
+                        <Route path="/roles/create" children={<CreateRole />} />
                         <Route path="/applications/create" children={<CreateApplication />} />
                         <Route path="/chats/pending" children={<PendingChats />} exact />
                         <Route path="/chats/create" children={<CreateChat />} />

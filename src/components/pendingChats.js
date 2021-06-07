@@ -57,7 +57,7 @@ class PendingChats extends React.Component {
             //console.log(prevState);
             //console.log(this.state);
             this.setState({isRendered: true});
-            console.log(this.state.chats);
+            //console.log(this.state.chats);
             this.state.chats = this.state.chats.filter(chat =>{
                 return chat.chat_ID !== this.state.chatId; //remove chat that had its status changed from the list so it gets unrendered
             })
