@@ -129,15 +129,12 @@ class UserRoles extends React.Component {
             alert("Assigning role failed");
             console.log(error);
         });  
-        this.state.allRoles.filter(role =>{
+        // eslint-disable-next-line
+        this.state.roles = this.state.roles.filter(role =>{
             //console.log(role.ID);
             //console.log(data.role_ID);
-            if(role.ID === data.role_ID) {
-                this.state.roles.pop(role);
-                //console.log(this.state)
-            }
-            return true;
-        })
+            return role.ID !== data.role_ID;
+            })
         this.setState( { isAssigned: false } );
         alert("Role removed");
     }

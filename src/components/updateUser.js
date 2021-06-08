@@ -103,7 +103,7 @@ class UpdateUser extends React.Component {
 
         <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit">
-                Register
+                Update
             </Button>
         </Form.Item>
       </Form>
